@@ -9,4 +9,4 @@ script:
 
 branches:
   only:
-    - /^[a-z-]+-v\d+\.\d+\.\d+.*$/
+    - /^[a-z-]+-v\d+\.\d+.*$/
