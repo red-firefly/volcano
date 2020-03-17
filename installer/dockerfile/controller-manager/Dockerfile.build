@@ -1,5 +1,9 @@
 FROM golang:1.13 AS builder
 
+ENV TZ Asia/Shanghai
+
+ARG VERSION
+ENV RELEASE_VER ${VERSION}
 WORKDIR ${GOPATH}/src/volcano.sh/volcano
 COPY . .
 RUN make vc-controller-manager
