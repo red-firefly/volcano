@@ -1,0 +1,12 @@
+FROM golang:1.13 AS builder
+
+WORKDIR /app
+COPY . /app
+RUN make vc-controller-manager
+
+FROM debian:10
+
+ENV TZ Asia/Shanghai
+
+COPY --from=builder /app/_output/bin/vc-controller-manager /vc-controller-manager
+ENTRYPOINT ["/vc-controller-manager"]
