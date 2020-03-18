@@ -182,6 +182,14 @@ var (
 			Help:      "Weight for one queue",
 		}, []string{"queue_name"},
 	)
+
+	queueOverused = promauto.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Subsystem: VolcanoNamespace,
+			Name:      "queue_overused",
+			Help:      "If one queue is overused",
+		}, []string{"queue_name"},
+	)
 )
 
 // UpdatePluginDuration updates latency for every plugin
@@ -260,6 +268,17 @@ func UpdateQueueShare(queueName string, share float64) {
 // UpdateQueueWeight records weight for one queue
 func UpdateQueueWeight(queueName string, weight int32) {
 	queueWeight.WithLabelValues(queueName).Set(float64(weight))
+}
+
+// UpdateQueueOverused records overused for one queue
+func UpdateQueueOverused(queueName string, overused bool) {
+	var value float64
+	if overused {
+		value = 1
+	} else {
+		value = 0
+	}
+	queueOverused.WithLabelValues(queueName).Set(value)
 }
 
 // DurationInMicroseconds gets the time in microseconds.

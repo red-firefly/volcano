@@ -214,6 +214,7 @@ func (pp *proportionPlugin) OnSessionOpen(ssn *framework.Session) {
 		attr := pp.queueOpts[queue.UID]
 
 		overused := !attr.allocated.LessEqual(attr.deserved)
+		metrics.UpdateQueueOverused(attr.name, overused)
 		if overused {
 			klog.V(3).Infof("Queue <%v>: deserved <%v>, allocated <%v>, share <%v>",
 				queue.Name, attr.deserved, attr.allocated, attr.share)
