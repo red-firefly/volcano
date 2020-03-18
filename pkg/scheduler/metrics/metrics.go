@@ -118,6 +118,70 @@ var (
 			Help:      "Number of retry counts for one job",
 		}, []string{"job_id"},
 	)
+
+	queueAllocatedMilliCPU = promauto.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Subsystem: VolcanoNamespace,
+			Name:      "queue_allocated_milli_cpu",
+			Help:      "Allocated CPU count for one queue",
+		}, []string{"queue_name"},
+	)
+
+	queueAllocatedMemory = promauto.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Subsystem: VolcanoNamespace,
+			Name:      "queue_allocated_memory_bytes",
+			Help:      "Allocated memory for one queue",
+		}, []string{"queue_name"},
+	)
+
+	queueRequestMilliCPU = promauto.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Subsystem: VolcanoNamespace,
+			Name:      "queue_request_milli_cpu",
+			Help:      "Request CPU count for one queue",
+		}, []string{"queue_name"},
+	)
+
+	queueRequestMemory = promauto.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Subsystem: VolcanoNamespace,
+			Name:      "queue_request_memory_bytes",
+			Help:      "Request memory for one queue",
+		}, []string{"queue_name"},
+	)
+
+	queueDeservedMilliCPU = promauto.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Subsystem: VolcanoNamespace,
+			Name:      "queue_deserved_milli_cpu",
+			Help:      "Deserved CPU count for one queue",
+		}, []string{"queue_name"},
+	)
+
+	queueDeservedMemory = promauto.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Subsystem: VolcanoNamespace,
+			Name:      "queue_deserved_memory_bytes",
+			Help:      "Deserved memory for one queue",
+		}, []string{"queue_name"},
+	)
+
+	queueShare = promauto.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Subsystem: VolcanoNamespace,
+			Name:      "queue_share",
+			Help:      "Share for one queue",
+		}, []string{"queue_name"},
+	)
+
+	queueWeight = promauto.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Subsystem: VolcanoNamespace,
+			Name:      "queue_weight",
+			Help:      "Weight for one queue",
+		}, []string{"queue_name"},
+	)
 )
 
 // UpdatePluginDuration updates latency for every plugin
@@ -168,6 +232,34 @@ func UpdateUnscheduleJobCount(jobCount int) {
 // RegisterJobRetries total number of job retries.
 func RegisterJobRetries(jobID string) {
 	jobRetryCount.WithLabelValues(jobID).Inc()
+}
+
+// UpdateQueueAllocated records allocated resources for one queue
+func UpdateQueueAllocated(queueName string, milliCPU, memory float64) {
+	queueAllocatedMilliCPU.WithLabelValues(queueName).Set(milliCPU)
+	queueAllocatedMemory.WithLabelValues(queueName).Set(memory)
+}
+
+// UpdateQueueRequest records request resources for one queue
+func UpdateQueueRequest(queueName string, milliCPU, memory float64) {
+	queueRequestMilliCPU.WithLabelValues(queueName).Set(milliCPU)
+	queueRequestMemory.WithLabelValues(queueName).Set(memory)
+}
+
+// UpdateQueueDeserved records deserved resources for one queue
+func UpdateQueueDeserved(queueName string, milliCPU, memory float64) {
+	queueDeservedMilliCPU.WithLabelValues(queueName).Set(milliCPU)
+	queueDeservedMemory.WithLabelValues(queueName).Set(memory)
+}
+
+// UpdateQueueShare records share for one queue
+func UpdateQueueShare(queueName string, share float64) {
+	queueShare.WithLabelValues(queueName).Set(share)
+}
+
+// UpdateQueueWeight records weight for one queue
+func UpdateQueueWeight(queueName string, weight int32) {
+	queueWeight.WithLabelValues(queueName).Set(float64(weight))
 }
 
 // DurationInMicroseconds gets the time in microseconds.
