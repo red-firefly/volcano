@@ -107,6 +107,11 @@ func (pp *proportionPlugin) OnSessionOpen(ssn *framework.Session) {
 		metrics.UpdateQueueAllocated(attr.name, attr.allocated.MilliCPU, attr.allocated.Memory)
 		metrics.UpdateQueueRequest(attr.name, attr.request.MilliCPU, attr.request.Memory)
 		metrics.UpdateQueueWeight(attr.name, attr.weight)
+		queue := ssn.Queues[attr.queueID]
+		metrics.UpdateQueuePodGroupInqueueCount(attr.name, queue.Queue.Status.Inqueue)
+		metrics.UpdateQueuePodGroupPendingCount(attr.name, queue.Queue.Status.Pending)
+		metrics.UpdateQueuePodGroupRunningCount(attr.name, queue.Queue.Status.Running)
+		metrics.UpdateQueuePodGroupUnknownCount(attr.name, queue.Queue.Status.Unknown)
 	}
 
 	remaining := pp.totalResource.Clone()
