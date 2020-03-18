@@ -270,7 +270,7 @@ func UpdateQueueWeight(queueName string, weight int32) {
 	queueWeight.WithLabelValues(queueName).Set(float64(weight))
 }
 
-// UpdateQueueOverused records overused for one queue
+// UpdateQueueOverused records if one queue is overused
 func UpdateQueueOverused(queueName string, overused bool) {
 	var value float64
 	if overused {
