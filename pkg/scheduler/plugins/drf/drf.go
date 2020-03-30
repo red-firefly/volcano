@@ -100,7 +100,7 @@ func (drf *drfPlugin) OnSessionOpen(ssn *framework.Session) {
 		}
 
 		// Calculate the init share of Job
-		drf.updateShare(attr)
+		drf.updateJobShare(job.Namespace, job.Name, attr)
 
 		drf.jobAttrs[job.UID] = attr
 
@@ -263,7 +263,8 @@ func (drf *drfPlugin) OnSessionOpen(ssn *framework.Session) {
 			attr := drf.jobAttrs[event.Task.Job]
 			attr.allocated.Add(event.Task.Resreq)
 
-			drf.updateShare(attr)
+			job := ssn.Jobs[event.Task.Job]
+			drf.updateJobShare(job.Namespace, job.Name, attr)
 
 			nsShare := -1.0
 			if namespaceOrderEnabled {
@@ -281,7 +282,8 @@ func (drf *drfPlugin) OnSessionOpen(ssn *framework.Session) {
 			attr := drf.jobAttrs[event.Task.Job]
 			attr.allocated.Sub(event.Task.Resreq)
 
-			drf.updateShare(attr)
+			job := ssn.Jobs[event.Task.Job]
+			drf.updateJobShare(job.Namespace, job.Name, attr)
 
 			nsShare := -1.0
 			if namespaceOrderEnabled {
@@ -301,6 +303,11 @@ func (drf *drfPlugin) OnSessionOpen(ssn *framework.Session) {
 func (drf *drfPlugin) updateNsShare(nsName string, attr *drfAttr) {
 	drf.updateShare(attr)
 	metrics.UpdateNamespaceShare(nsName, attr.share)
+}
+
+func (drf *drfPlugin) updateJobShare(jobNs, jobName string, attr *drfAttr) {
+	drf.updateShare(attr)
+	metrics.UpdateJobShare(jobNs, jobName, attr.share)
 }
 
 func (drf *drfPlugin) updateShare(attr *drfAttr) {
