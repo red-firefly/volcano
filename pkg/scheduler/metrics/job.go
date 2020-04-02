@@ -11,11 +11,24 @@ var (
 			Subsystem: VolcanoNamespace,
 			Name:      "job_share",
 			Help:      "Share for one job",
-		}, []string{"job_ns", "job_name"},
+		}, []string{"job_ns", "job_id"},
+	)
+
+	jobRetryCount = promauto.NewCounterVec(
+		prometheus.CounterOpts{
+			Subsystem: VolcanoNamespace,
+			Name:      "job_retry_counts",
+			Help:      "Number of retry counts for one job",
+		}, []string{"job_id"},
 	)
 )
 
 // UpdateJobShare records share for one job
-func UpdateJobShare(jobNs, jobName string, share float64) {
-	jobShare.WithLabelValues(jobNs, jobName).Set(share)
+func UpdateJobShare(jobNs, jobId string, share float64) {
+	jobShare.WithLabelValues(jobNs, jobId).Set(share)
+}
+
+// RegisterJobRetries total number of job retries.
+func RegisterJobRetries(jobID string) {
+	jobRetryCount.WithLabelValues(jobID).Inc()
 }
